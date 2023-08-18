@@ -44,11 +44,11 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
-        //$marca = Marca::create($request->all());
+        $request->validate($this->marca->rules(), $this->marca->feedback());
 
         $marca = $this->marca->create($request->all());
 
-        return $marca;
+        return response()->json($marca, 201);
     }
 
     /**
@@ -62,7 +62,7 @@ class MarcaController extends Controller
         $marca = $this->marca->find($id);
 
         if($marca === null) {
-            return ['error' => 'A marca encontrada não existe!'];
+            return response()->json(['error' => 'A marca encontrada não existe!'], 404);
         }
 
         return $marca;
@@ -91,8 +91,10 @@ class MarcaController extends Controller
         $marca = $this->marca->find($id);
 
         if($marca === null) {
-            return ['error' => 'Impossível realizar a atualização! A marca solicitada não existe.'];
+            return response()->json(['error' => 'Impossível realizar a atualização! A marca solicitada não existe.'], 404);
         }
+
+        $request->validate($this->marca->rules(), $this->marca->feedback());
 
         $marca->update($request->all());
 
@@ -110,7 +112,7 @@ class MarcaController extends Controller
         $marca = $this->marca->find($id);
 
         if($marca === null) {
-            return ['error' => 'Impossível realizar a exclusão! A marca solicitada não existe.'];
+            return response()->json(['error' => 'Impossível realizar a exclusão! A marca solicitada não existe.'], 404);
         }
 
         $marca->delete();
